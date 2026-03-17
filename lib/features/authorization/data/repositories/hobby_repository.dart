@@ -1,0 +1,42 @@
+import 'package:dio/dio.dart';
+import 'package:waylomate/features/authorization/data/models/goal_model/model.dart';
+import 'package:waylomate/features/authorization/data/models/hobby_model/model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:waylomate/features/authorization/data/models/language_model/model.dart';
+
+class AuthContentRepository {
+  final dio = Dio();
+
+  Future<List<T>> _getElementFromServer<T>(
+    String element,
+    T Function(Map<String, dynamic> json) fromJsonFactory,
+  ) async {
+    final server = dotenv.env['SERVER'];
+    if (server == null || server.isEmpty) {
+      throw Exception('Server в .env отсутствует');
+    }
+    final response = await dio.get("http://$server/$element");
+    final List<dynamic> data = response.data;
+    return data
+        .map((json) => fromJsonFactory(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<Hobby>> getHobbies() async {
+    return _getElementFromServer<Hobby>(
+      'hobby',
+      (json) => Hobby.fromJson(json),
+    );
+  }
+
+  Future<List<Goal>> getGoals() async {
+    return _getElementFromServer<Goal>('goal', (json) => Goal.fromJson(json));
+  }
+
+  Future<List<Language>> getLanguages() async {
+    return _getElementFromServer<Language>(
+      'language',
+      (json) => Language.fromJson(json),
+    );
+  }
+}
