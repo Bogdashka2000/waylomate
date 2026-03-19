@@ -3,12 +3,12 @@ import 'package:equatable/equatable.dart';
 import 'package:waylomate/features/authorization/data/models/hobby_model/model.dart';
 import 'package:waylomate/features/authorization/data/models/goal_model/model.dart';
 import 'package:waylomate/features/authorization/data/models/language_model/model.dart';
-import 'package:waylomate/features/authorization/data/repositories/hobby_repository.dart';
+import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
 
 part 'events.dart';
 part 'states.dart';
 
-class ProfileComponentsBloc extends Bloc<Event, State> {
+class ProfileComponentsBloc extends Bloc<ProfileEvent, ProfileState> {
   final AuthContentRepository authContentRepository;
   ProfileComponentsBloc(this.authContentRepository) : super(InitialState()) {
     on<HobbiesRequested>(_hobbyRequest);
@@ -18,7 +18,7 @@ class ProfileComponentsBloc extends Bloc<Event, State> {
 
   Future<void> _hobbyRequest(
     HobbiesRequested event,
-    Emitter<State> emit,
+    Emitter<ProfileState> emit,
   ) async {
     emit(const LoadingState());
 
@@ -26,24 +26,27 @@ class ProfileComponentsBloc extends Bloc<Event, State> {
       final hobbies = await authContentRepository.getHobbies();
       emit(HobbiesLoadedState(hobbies));
     } catch (error) {
-      emit(ErrorState("Не удалось загрузить хобби из сервера $error"));
+      emit(ErrorState("Не удалось загрузить хобби из сервера"));
     }
   }
 
-  Future<void> _goalRequest(GoalsRequested event, Emitter<State> emit) async {
+  Future<void> _goalRequest(
+    GoalsRequested event,
+    Emitter<ProfileState> emit,
+  ) async {
     emit(const LoadingState());
 
     try {
       final goals = await authContentRepository.getGoals();
       emit(GoalsLoadedState(goals));
     } catch (error) {
-      emit(ErrorState("Не удалось загрузить цели из сервера $error"));
+      emit(ErrorState("Не удалось загрузить цели из сервера"));
     }
   }
 
   Future<void> _languageRequest(
     LanguagesRequested event,
-    Emitter<State> emit,
+    Emitter<ProfileState> emit,
   ) async {
     emit(const LoadingState());
 
@@ -51,7 +54,7 @@ class ProfileComponentsBloc extends Bloc<Event, State> {
       final languages = await authContentRepository.getLanguages();
       emit(LanguagesLoadedState(languages));
     } catch (error) {
-      emit(ErrorState("Не удалось загрузить языки из сервера $error"));
+      emit(ErrorState("Не удалось загрузить языки из сервера"));
     }
   }
 }

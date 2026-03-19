@@ -1,25 +1,25 @@
 part of 'bloc.dart';
 
-sealed class State extends Equatable {
-  const State();
+abstract class ProfileState extends Equatable {
+  const ProfileState();
   List<Object?> get props => [];
 }
 
-class InitialState extends State {}
+class InitialState extends ProfileState {}
 
-class LoadingState extends State {
+class LoadingState extends ProfileState {
   const LoadingState();
 }
 
-class HobbiesLoadedState extends State {
+class HobbiesLoadedState extends ProfileState {
   final List<Hobby> hobbies;
   const HobbiesLoadedState(this.hobbies);
 
   @override
-  List<Object?> get props => [hobbies];
+  List<Object> get props => [hobbies];
 }
 
-class GoalsLoadedState extends State {
+class GoalsLoadedState extends ProfileState {
   final List<Goal> goals;
   const GoalsLoadedState(this.goals);
 
@@ -27,7 +27,7 @@ class GoalsLoadedState extends State {
   List<Object?> get props => [goals];
 }
 
-class LanguagesLoadedState extends State {
+class LanguagesLoadedState extends ProfileState {
   final List<Language> languages;
   const LanguagesLoadedState(this.languages);
 
@@ -35,7 +35,7 @@ class LanguagesLoadedState extends State {
   List<Object?> get props => [languages];
 }
 
-class ErrorState extends State {
+class ErrorState extends ProfileState {
   final String error;
   const ErrorState(this.error);
 

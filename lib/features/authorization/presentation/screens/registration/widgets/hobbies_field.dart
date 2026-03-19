@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:waylomate/features/authorization/presentation/blocs/profile_components_bloc/bloc.dart'
+    hide State;
+import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/hobby_alert.dart';
 
 class HobbiesRegistrationScreen extends StatefulWidget {
   const HobbiesRegistrationScreen({Key? key}) : super(key: key);
@@ -9,11 +13,7 @@ class HobbiesRegistrationScreen extends StatefulWidget {
       _HobbiesRegistrationScreenState();
 }
 
-enum Gender { woman, man, none }
-
 class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
-  Gender _gender = Gender.none;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -69,7 +69,15 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: IconButton(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          showDialog<void>(
+                            context: context,
+                            builder: (_) => BlocProvider.value(
+                              value: context.read<ProfileComponentsBloc>(),
+                              child: HobbyAlert(),
+                            ),
+                          ),
+                        },
                         icon: Icon(
                           Icons.add,
                           size: 36,

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
+import 'package:waylomate/features/authorization/presentation/blocs/profile_components_bloc/bloc.dart';
+import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/welcome_field.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/user_name_field.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/birthday_field.dart';
@@ -6,6 +10,7 @@ import 'package:waylomate/features/authorization/presentation/screens/registrati
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/hobbies_field.dart';
 
 Route? router(RouteSettings settings) {
+  AuthContentRepository acr = AuthContentRepository();
   switch (settings.name) {
     case 'registration_welcome':
       return MaterialPageRoute(
@@ -14,7 +19,10 @@ Route? router(RouteSettings settings) {
       );
     case 'registration_name':
       return MaterialPageRoute(
-        builder: (_) => const UsernameRegistrationScreen(),
+        builder: (context) => BlocProvider(
+          create: (_) => RegistrationFormBloc(),
+          child: UsernameRegistrationScreen(),
+        ),
         settings: settings,
       );
     case 'registration_birthday':
@@ -29,7 +37,10 @@ Route? router(RouteSettings settings) {
       );
     case 'registration_hobbies':
       return MaterialPageRoute(
-        builder: (_) => const HobbiesRegistrationScreen(),
+        builder: (context) => BlocProvider(
+          create: (_) => ProfileComponentsBloc(acr),
+          child: const HobbiesRegistrationScreen(),
+        ),
         settings: settings,
       );
     default:

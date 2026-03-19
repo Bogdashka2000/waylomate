@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:waylomate/features/authorization/data/models/hobby_model/model.dart';
-import 'package:waylomate/features/authorization/data/repositories/hobby_repository.dart';
-// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-// import 'package:waylomate/features/authorization/presentation/view.dart';
-
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
 
 class AuthorizationScreen extends StatefulWidget {
   AuthorizationScreen({Key? key}) : super(key: key);
