@@ -87,19 +87,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                         ),
                       ),
                       child: InkWell(
-                        onTap: () async {
-                          final hs = AuthContentRepository();
-                          try {
-                            List<Hobby> hobby = await hs.getHobbies();
-                            for (Hobby h in hobby) {
-                              print("${h.Id} ${h.hobbyName}");
-                            }
-                          } catch (e) {
-                            print(e);
-                          } finally {
-                            print("Niga");
-                          }
-                        },
                         borderRadius: BorderRadius.circular(8),
                         child: const Center(
                           child: Text(

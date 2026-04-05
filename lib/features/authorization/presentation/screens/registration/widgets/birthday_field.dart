@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BirthdayRegistrationScreen extends StatefulWidget {
   const BirthdayRegistrationScreen({Key? key}) : super(key: key);
@@ -11,6 +13,8 @@ class BirthdayRegistrationScreen extends StatefulWidget {
 class _BirthdayRegistrationScreenState
     extends State<BirthdayRegistrationScreen> {
   DateTime? _selectedDate;
+
+  bool _isFormValid = false;
 
   final List<String> _months = [
     "Января",
@@ -32,12 +36,13 @@ class _BirthdayRegistrationScreenState
       context: context,
       initialDate: DateTime(2000),
       firstDate: DateTime(1950),
-      lastDate: DateTime.now(), // Нельзя выбрать дату в будущем
+      lastDate: DateTime.now(),
     );
 
     if (picked != null && mounted) {
       setState(() {
         _selectedDate = picked;
+        _isFormValid = true;
       });
     }
   }
@@ -175,32 +180,58 @@ class _BirthdayRegistrationScreenState
             height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              gradient: const LinearGradient(
-                colors: [
-                  Color.fromARGB(255, 126, 87, 194),
-                  Color.fromARGB(255, 74, 50, 115),
-                ],
-              ),
+              gradient: _isFormValid
+                  ? const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 126, 87, 194),
+                        Color.fromARGB(255, 74, 50, 115),
+                      ],
+                    )
+                  : const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 130, 130, 130),
+                        Color.fromARGB(255, 43, 43, 43),
+                      ],
+                    ),
             ),
             child: InkWell(
-              onTap: () {
-                Navigator.of(context).pushNamed('registration_gender');
-              },
+              onTap: () => _isFormValid ? _onNextPressed() : null,
               borderRadius: BorderRadius.circular(8),
-              child: const Center(
-                child: Text(
-                  "ДАЛЕЕ",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                  ),
-                ),
+              child: BlocBuilder<RegistrationFormBloc, RegistrationFormState>(
+                builder: (context, state) {
+                  if (state is RegistrationFormInProgress) {
+                    const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    );
+                  }
+                  return const Center(
+                    child: Text(
+                      "ДАЛЕЕ",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _sendToBloc() {
+    context.read<RegistrationFormBloc>().add(BirthdayChanged(_selectedDate!));
+  }
+
+  void _onNextPressed() {
+    _sendToBloc();
+    Navigator.of(context).pushNamed('registration_gender');
   }
 }

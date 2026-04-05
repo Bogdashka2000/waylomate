@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/profile_components_bloc/bloc.dart'
     hide State;
+import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/hobby_alert.dart';
 
 class HobbiesRegistrationScreen extends StatefulWidget {
@@ -14,6 +15,16 @@ class HobbiesRegistrationScreen extends StatefulWidget {
 }
 
 class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<ProfileComponentsBloc>().add(HobbiesRequested());
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,14 +60,67 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  width: 400,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                  ),
+                BlocBuilder<ProfileComponentsBloc, ProfileState>(
+                  builder: (context, state) {
+                    if (state is LoadingState) {
+                      return const Center(
+                        child: const Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    if (state is! HobbiesLoadedState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is HobbiesLoadedState) {
+                      return BlocBuilder<
+                        RegistrationFormBloc,
+                        RegistrationFormState
+                      >(
+                        builder: (context, formState) {
+                          final selectedIds =
+                              formState is RegistrationFormInProgress
+                              ? formState.selectedHobbyIds
+                              : <int>[];
+                          if (formState is RegistrationFormInProgress ||
+                              formState is RegistrationFormInitial) {
+                            return Container(
+                              width: 400,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                              child: GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 2,
+                                      mainAxisSpacing: 2,
+                                    ),
+                                itemCount: state.hobbies.isEmpty
+                                    ? 0
+                                    : state.hobbies.length,
+                                itemBuilder: (context, index) {
+                                  final hobby = state.hobbies[index];
+                                  if (selectedIds.contains(hobby.Id)) {
+                                    return Container(
+                                      child: Text(hobby.hobbyName),
+                                    );
+                                  }
+                                },
+                              ),
+                            );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      );
+                    }
+                  },
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -72,8 +136,15 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                         onPressed: () => {
                           showDialog<void>(
                             context: context,
-                            builder: (_) => BlocProvider.value(
-                              value: context.read<ProfileComponentsBloc>(),
+                            builder: (_) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider<ProfileComponentsBloc>.value(
+                                  value: context.read<ProfileComponentsBloc>(),
+                                ),
+                                BlocProvider<RegistrationFormBloc>.value(
+                                  value: context.read<RegistrationFormBloc>(),
+                                ),
+                              ],
                               child: HobbyAlert(),
                             ),
                           ),

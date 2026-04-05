@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waylomate/features/authorization/presentation/blocs/profile_components_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
 // import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -23,6 +24,7 @@ class _UsernameRegistrationScreenState
   @override
   void initState() {
     super.initState();
+
     _firstNameController = TextEditingController();
     _lastNameController = TextEditingController();
     _firstNameController.addListener(_validateForm);
@@ -98,6 +100,7 @@ class _UsernameRegistrationScreenState
                     ],
                   ),
                 ),
+
                 const SizedBox(height: 8),
                 Text(
                   "Как вас зовут?",

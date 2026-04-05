@@ -19,26 +19,30 @@ Route? router(RouteSettings settings) {
       );
     case 'registration_name':
       return MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (_) => RegistrationFormBloc(),
-          child: UsernameRegistrationScreen(),
-        ),
+        builder: (context) => UsernameRegistrationScreen(),
         settings: settings,
       );
     case 'registration_birthday':
       return MaterialPageRoute(
-        builder: (_) => const BirthdayRegistrationScreen(),
+        builder: (context) => BirthdayRegistrationScreen(),
         settings: settings,
       );
     case 'registration_gender':
       return MaterialPageRoute(
-        builder: (_) => const GenderRegistrationScreen(),
+        builder: (context) => GenderRegistrationScreen(),
         settings: settings,
       );
     case 'registration_hobbies':
       return MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (_) => ProfileComponentsBloc(acr),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<RegistrationFormBloc>.value(
+              value: context.read<RegistrationFormBloc>(),
+            ),
+            BlocProvider<ProfileComponentsBloc>(
+              create: (_) => ProfileComponentsBloc(AuthContentRepository()),
+            ),
+          ],
           child: const HobbiesRegistrationScreen(),
         ),
         settings: settings,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/observer/observer.dart';
 import 'package:waylomate/features/authorization/presentation/router/router.dart';
 
@@ -56,10 +58,13 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
           const SizedBox(height: 16),
 
           Expanded(
-            child: Navigator(
-              initialRoute: 'registration_welcome',
-              observers: [_observer],
-              onGenerateRoute: router,
+            child: BlocProvider<RegistrationFormBloc>(
+              create: (_) => RegistrationFormBloc(),
+              child: Navigator(
+                initialRoute: 'registration_welcome',
+                observers: [_observer],
+                onGenerateRoute: router,
+              ),
             ),
           ),
         ],
