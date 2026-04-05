@@ -59,7 +59,6 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                     height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 8),
                 BlocBuilder<ProfileComponentsBloc, ProfileState>(
                   builder: (context, state) {
                     if (state is LoadingState) {
@@ -82,33 +81,71 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                               : <int>[];
                           if (formState is RegistrationFormInProgress ||
                               formState is RegistrationFormInitial) {
+                            final selectedHobbies = state.hobbies
+                                .where(
+                                  (hobby) => selectedIds.contains(hobby.Id),
+                                )
+                                .toList();
+
                             return Container(
-                              width: 400,
-                              height: 70,
+                              width: double.infinity,
+                              height: 100,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              child: GridView.builder(
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      crossAxisSpacing: 2,
-                                      mainAxisSpacing: 2,
+                              child: selectedHobbies.isEmpty
+                                  ? const Center(
+                                      child: Text(
+                                        'Хобби не выбраны',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    )
+                                  : GridView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.all(10),
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            crossAxisSpacing: 10,
+                                            mainAxisSpacing: 10,
+                                            childAspectRatio: 3.5,
+                                          ),
+                                      itemCount: selectedHobbies.length,
+                                      itemBuilder: (context, index) {
+                                        final hobby = selectedHobbies[index];
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(
+                                              255,
+                                              215,
+                                              196,
+                                              255,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              24,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              hobby.hobbyName,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: Color.fromARGB(
+                                                  255,
+                                                  74,
+                                                  50,
+                                                  115,
+                                                ),
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                itemCount: state.hobbies.isEmpty
-                                    ? 0
-                                    : state.hobbies.length,
-                                itemBuilder: (context, index) {
-                                  final hobby = state.hobbies[index];
-                                  if (selectedIds.contains(hobby.Id)) {
-                                    return Container(
-                                      child: Text(hobby.hobbyName),
-                                    );
-                                  }
-                                },
-                              ),
                             );
                           } else {
                             return const Center(
