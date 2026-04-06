@@ -3,9 +3,35 @@ import 'package:waylomate/features/authorization/data/models/goal_model/model.da
 import 'package:waylomate/features/authorization/data/models/hobby_model/model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:waylomate/features/authorization/data/models/language_model/model.dart';
+import 'package:waylomate/features/authorization/data/models/registration_model/request_model.dart';
+import 'package:waylomate/features/authorization/data/models/registration_model/response_model.dart';
 
 class AuthContentRepository {
   final dio = Dio();
+
+  Future<UserRegistrationResponse> sendUserData(
+    UserRegistrationRequest urr,
+  ) async {
+    final server = dotenv.env['SERVER'];
+    if (server == null || server.isEmpty) {
+      throw Exception('Server в .env отсутствует');
+    }
+    final response = await dio.post(
+      "http://$server/registration",
+      data: urr.toJson(),
+      options: Options(headers: {'Content-Type': 'application/json'}),
+    );
+
+    if (response.statusCode == 409) {
+      throw Exception('Пользователь уже существует');
+    }
+    if (response.statusCode == 422) {
+      throw Exception('Ошибка валидации');
+    }
+
+    final dynamic data = response.data;
+    return UserRegistrationResponse.fromJson(data);
+  }
 
   Future<List<T>> _getElementFromServer<T>(
     String element,

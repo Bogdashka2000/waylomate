@@ -1,12 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:waylomate/features/authorization/data/models/registration_model/request_model.dart';
+import 'package:waylomate/features/authorization/data/models/registration_model/response_model.dart';
+import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
 
 part 'events.dart';
 part 'states.dart';
 
 class RegistrationFormBloc
     extends Bloc<RegistrationFormEvent, RegistrationFormState> {
-  RegistrationFormBloc() : super(RegistrationFormInitial()) {
+  final AuthContentRepository authContentRepository;
+  RegistrationFormBloc(this.authContentRepository)
+    : super(RegistrationFormInitial()) {
     on<UsernameChanged>(_onUsernameChanged);
     on<BirthdayChanged>(_onBirthdayChanged);
     on<GenderChanged>(_onGenderChanged);
@@ -16,8 +21,10 @@ class RegistrationFormBloc
     on<GoalUnselected>(_onGoalUnselected);
     on<LanguageSelected>(_onLanguageSelected);
     on<LanguageUnselected>(_onLanguageUnselected);
+    on<AboutChanged>(_onAboutChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<EmailChanged>(_onEmailChanged);
+    on<SendUserData>(_onSendUserData);
   }
 
   void _onUsernameChanged(
@@ -170,6 +177,20 @@ class RegistrationFormBloc
     }
   }
 
+  void _onAboutChanged(
+    AboutChanged event,
+    Emitter<RegistrationFormState> emit,
+  ) {
+    if (state is RegistrationFormInProgress) {
+      emit(
+        (state as RegistrationFormInProgress).copyWith(
+          password: event.about,
+          error: null,
+        ),
+      );
+    }
+  }
+
   void _onPasswordChanged(
     PasswordChanged event,
     Emitter<RegistrationFormState> emit,
@@ -198,58 +219,34 @@ class RegistrationFormBloc
     }
   }
 
-  // Future<void> _onRegistrationSubmitted(
-  //   RegistrationSubmitted event,
-  //   Emitter<RegistrationFormState> emit,
-  // ) async {
-  //   if (state is! RegistrationFormInProgress) return;
+  Future<void> _onSendUserData(
+    SendUserData event,
+    Emitter<RegistrationFormState> emit,
+  ) async {
+    if (state is! RegistrationFormInProgress) return;
+    try {
+      final currentState = state as RegistrationFormInProgress;
 
-  //   final currentState = state as RegistrationFormInProgress;
+      UserRegistrationRequest urr = UserRegistrationRequest(
+        firstName: currentState.firstName!,
+        lastName: currentState.lastName!,
+        birthday: currentState.birthday!,
+        gender: currentState.gender == Gender.man ? 'male' : 'female',
+        hobbies: currentState.selectedHobbyIds,
+        goals: currentState.selectedGoalIds,
+        languages: currentState.selectedLanguageIds,
+        email: currentState.email!,
+        password: currentState.password!,
+        about: currentState.about!,
+      );
 
-  //   // 🔹 ВАЛИДАЦИЯ - все данные уже в currentState!
-  //   if (currentState.firstName == null || currentState.firstName!.isEmpty) {
-  //     emit(const RegistrationFormFailure(error: 'Введите имя'));
-  //     return;
-  //   }
+      UserRegistrationResponse user = await authContentRepository.sendUserData(
+        urr,
+      );
 
-  //   if (currentState.birthday == null) {
-  //     emit(const RegistrationFormFailure(error: 'Выберите дату рождения'));
-  //     return;
-  //   }
-
-  //   if (currentState.email == null || currentState.email!.isEmpty) {
-  //     emit(const RegistrationFormFailure(error: 'Введите email'));
-  //     return;
-  //   }
-
-  //   if (currentState.password == null || currentState.password!.length < 6) {
-  //     emit(const RegistrationFormFailure(error: 'Пароль должен быть не менее 6 символов'));
-  //     return;
-  //   }
-
-  //   emit(currentState.copyWith(isSubmitting: true, error: null));
-
-  //   try {
-  //     // 🔥 ОТПРАВКА НА СЕРВЕР - все данные в state!
-  //     final user = await registerUser(RegisterUserParams(
-  //       firstName: currentState.firstName!,
-  //       lastName: currentState.lastName,
-  //       birthDate: currentState.birthday!,
-  //       gender: currentState.gender,
-  //       hobbyIds: currentState.selectedHobbyIds,
-  //       goalIds: currentState.selectedGoalIds,
-  //       languageIds: currentState.selectedLanguageIds,
-  //       email: currentState.email!,
-  //       password: currentState.password!,
-  //     ));
-
-  //     emit(RegistrationFormSuccess(userId: user.id));
-  //   } catch (e) {
-  //     emit(RegistrationFormFailure(error: e.toString()));
-  //   }
-  // }
-
-  // void _onRegistrationReset(RegistrationReset event, Emitter<RegistrationFormState> emit) {
-  //   emit(const RegistrationFormInitial());
-  // }
+      emit(RegistrationFormSuccess(urr: user));
+    } catch (e) {
+      emit(RegistrationFormFailure(error: e));
+    }
+  }
 }

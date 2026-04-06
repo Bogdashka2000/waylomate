@@ -18,6 +18,7 @@ class RegistrationFormInProgress extends RegistrationFormState {
   final List<int> selectedHobbyIds;
   final List<int> selectedGoalIds;
   final List<int> selectedLanguageIds;
+  final String? about;
   final String? email;
   final String? password;
   final bool isSubmitting;
@@ -31,6 +32,7 @@ class RegistrationFormInProgress extends RegistrationFormState {
     this.selectedHobbyIds = const [],
     this.selectedGoalIds = const [],
     this.selectedLanguageIds = const [],
+    this.about,
     this.email,
     this.password,
     this.isSubmitting = false,
@@ -45,6 +47,7 @@ class RegistrationFormInProgress extends RegistrationFormState {
     List<int>? selectedHobbyIds,
     List<int>? selectedGoalIds,
     List<int>? selectedLanguageIds,
+    String? about,
     String? email,
     String? password,
     bool? isSubmitting,
@@ -64,6 +67,7 @@ class RegistrationFormInProgress extends RegistrationFormState {
       selectedLanguageIds: selectedLanguageIds != null
           ? List<int>.from(selectedLanguageIds)
           : this.selectedLanguageIds,
+      about: about ?? this.about,
       email: email ?? this.email,
       password: password ?? this.password,
       isSubmitting: isSubmitting ?? this.isSubmitting,
@@ -80,6 +84,7 @@ class RegistrationFormInProgress extends RegistrationFormState {
     selectedHobbyIds,
     selectedGoalIds,
     selectedLanguageIds,
+    about,
     email,
     password,
     isSubmitting,
@@ -88,14 +93,14 @@ class RegistrationFormInProgress extends RegistrationFormState {
 }
 
 class RegistrationFormSuccess extends RegistrationFormState {
-  final int userId;
-  const RegistrationFormSuccess({required this.userId});
+  final UserRegistrationResponse urr;
+  const RegistrationFormSuccess({required this.urr});
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [urr];
 }
 
 class RegistrationFormFailure extends RegistrationFormState {
-  final String error;
+  final Object? error;
   const RegistrationFormFailure({required this.error});
   @override
   List<Object?> get props => [error];

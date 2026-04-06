@@ -80,6 +80,14 @@ class LanguageUnselected extends RegistrationFormEvent {
   List<int> get props => [languageId];
 }
 
+class AboutChanged extends RegistrationFormEvent {
+  final String about;
+  AboutChanged(this.about);
+
+  @override
+  List<String> get props => [about];
+}
+
 class PasswordChanged extends RegistrationFormEvent {
   final String password;
   PasswordChanged(this.password);
@@ -94,4 +102,8 @@ class EmailChanged extends RegistrationFormEvent {
 
   @override
   List<String> get props => [email];
+}
+
+class SendUserData extends RegistrationFormEvent {
+  SendUserData();
 }

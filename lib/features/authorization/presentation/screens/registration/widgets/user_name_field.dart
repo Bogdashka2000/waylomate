@@ -154,7 +154,7 @@ class _UsernameRegistrationScreenState
               child: BlocBuilder<RegistrationFormBloc, RegistrationFormState>(
                 builder: (context, state) {
                   if (state is RegistrationFormInProgress) {
-                    const Center(
+                    return const Center(
                       child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 2,

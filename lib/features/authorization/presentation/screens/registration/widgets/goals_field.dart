@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/profile_components_bloc/bloc.dart'
     hide State;
 import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
-import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/hobby_alert.dart';
+import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/goal_alert.dart';
 
-class HobbiesRegistrationScreen extends StatefulWidget {
-  const HobbiesRegistrationScreen({Key? key}) : super(key: key);
+class GoalsRegistrationScreen extends StatefulWidget {
+  GoalsRegistrationScreen({Key? key}) : super(key: key);
 
   @override
-  State<HobbiesRegistrationScreen> createState() =>
-      _HobbiesRegistrationScreenState();
+  _GoalsRegistrationScreenState createState() =>
+      _GoalsRegistrationScreenState();
 }
 
-class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
+class _GoalsRegistrationScreenState extends State<GoalsRegistrationScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<ProfileComponentsBloc>().add(HobbiesRequested());
+        context.read<ProfileComponentsBloc>().add(GoalsRequested());
       }
     });
   }
@@ -37,12 +38,12 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
               spacing: 20,
               children: <Widget>[
                 Image.asset(
-                  "assets/authorization_preview/reg_images/hobbies_registration_element.jpg",
+                  "assets/authorization_preview/reg_images/goals_registration_element.jpg",
                   width: MediaQuery.of(context).size.width * 0.5,
                   scale: 0.2,
                 ),
                 const Text(
-                  "Расскажите о своих увлечениях",
+                  "Какие поездки вы планируете?",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -51,7 +52,7 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                   ),
                 ),
                 const Text(
-                  "Так система подберёт спутников, с которыми вам будет комфортно в дороге. Общие интересы делают поездку приятнее!",
+                  "Система подберёт попутчиков с похожими задачами. Ехать с единомышленниками комфортнее и безопаснее!",
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 13,
@@ -66,10 +67,10 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                         child: const Center(child: CircularProgressIndicator()),
                       );
                     }
-                    if (state is! HobbiesLoadedState) {
+                    if (state is! GoalsLoadedState) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    if (state is HobbiesLoadedState) {
+                    if (state is GoalsLoadedState) {
                       return BlocBuilder<
                         RegistrationFormBloc,
                         RegistrationFormState
@@ -77,14 +78,12 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                         builder: (context, formState) {
                           final selectedIds =
                               formState is RegistrationFormInProgress
-                              ? formState.selectedHobbyIds
+                              ? formState.selectedGoalIds
                               : <int>[];
                           if (formState is RegistrationFormInProgress ||
                               formState is RegistrationFormInitial) {
-                            final selectedHobbies = state.hobbies
-                                .where(
-                                  (hobby) => selectedIds.contains(hobby.Id),
-                                )
+                            final selectedGoals = state.goals
+                                .where((goal) => selectedIds.contains(goal.Id))
                                 .toList();
 
                             return Container(
@@ -93,10 +92,10 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: selectedHobbies.isEmpty
+                              child: selectedGoals.isEmpty
                                   ? const Center(
                                       child: Text(
-                                        'Хобби не выбраны',
+                                        'Цели не выбраны',
                                         style: TextStyle(color: Colors.grey),
                                       ),
                                     )
@@ -112,9 +111,9 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                                             mainAxisSpacing: 10,
                                             childAspectRatio: 3.5,
                                           ),
-                                      itemCount: selectedHobbies.length,
+                                      itemCount: selectedGoals.length,
                                       itemBuilder: (context, index) {
-                                        final hobby = selectedHobbies[index];
+                                        final hobby = selectedGoals[index];
                                         return Container(
                                           decoration: BoxDecoration(
                                             color: const Color.fromARGB(
@@ -129,7 +128,7 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              hobby.hobbyName,
+                                              hobby.goalName,
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w600,
@@ -182,7 +181,7 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                                   value: context.read<RegistrationFormBloc>(),
                                 ),
                               ],
-                              child: HobbyAlert(),
+                              child: GoalAlert(),
                             ),
                           ),
                         },
@@ -202,7 +201,7 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
           BlocBuilder<RegistrationFormBloc, RegistrationFormState>(
             builder: (context, formState) {
               final selectedIds = formState is RegistrationFormInProgress
-                  ? formState.selectedHobbyIds
+                  ? formState.selectedGoalIds
                   : <int>[];
               return Container(
                 height: 50,
@@ -227,7 +226,7 @@ class _HobbiesRegistrationScreenState extends State<HobbiesRegistrationScreen> {
                       ? Navigator.of(
                           context,
                           rootNavigator: false,
-                        ).pushNamed('registration_goals')
+                        ).pushNamed('registration_languages')
                       : null,
                   borderRadius: BorderRadius.circular(8),
                   child:
