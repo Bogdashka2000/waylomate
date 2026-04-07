@@ -5,6 +5,7 @@ import 'package:waylomate/features/authorization/presentation/blocs/profile_comp
 import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/about_field.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/email_field.dart';
+import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/final_field.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/goals_field.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/languages_field.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/password_field.dart';
@@ -94,6 +95,11 @@ Route? router(RouteSettings settings) {
     case 'registration_email':
       return MaterialPageRoute(
         builder: (context) => EmailRegistrationScreen(),
+        settings: settings,
+      );
+    case 'registration_final':
+      return MaterialPageRoute(
+        builder: (context) => const FinalRegistrationScreen(),
         settings: settings,
       );
     default:

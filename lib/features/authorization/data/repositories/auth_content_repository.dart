@@ -17,7 +17,7 @@ class AuthContentRepository {
       throw Exception('Server в .env отсутствует');
     }
     final response = await dio.post(
-      "http://$server/registration",
+      "http://$server/user/registration",
       data: urr.toJson(),
       options: Options(headers: {'Content-Type': 'application/json'}),
     );

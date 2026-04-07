@@ -190,6 +190,9 @@ class _UsernameRegistrationScreenState
   }
 
   void _onNextPressed() {
+    print(
+      '📤 Sending UsernameChanged: firstName="${_firstNameController.text.trim()}", lastName="${_lastNameController.text.trim()}"',
+    );
     _sendToBloc();
     Navigator.of(
       context,

@@ -100,7 +100,7 @@ class RegistrationFormSuccess extends RegistrationFormState {
 }
 
 class RegistrationFormFailure extends RegistrationFormState {
-  final Object? error;
+  final String error;
   const RegistrationFormFailure({required this.error});
   @override
   List<Object?> get props => [error];

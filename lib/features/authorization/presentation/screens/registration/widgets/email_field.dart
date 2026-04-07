@@ -148,11 +148,11 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> {
                       Navigator.of(
                         context,
                         rootNavigator: false,
-                      ).pushReplacementNamed('/home');
+                      ).pushNamed('registration_final');
                     });
                     return const Center(
                       child: Text(
-                        "✓ Зарегистрирован",
+                        "Зарегистрирован",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -162,13 +162,13 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> {
                     );
                   }
                   if (state is RegistrationFormFailure) {
-                    return const Center(
+                    return Center(
                       child: Text(
-                        "${}",
+                        state.error,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: 18,
+                          fontSize: 10,
                         ),
                       ),
                     );

@@ -40,7 +40,12 @@ class RegistrationFormBloc
         ),
       );
     } else {
-      emit(const RegistrationFormInProgress());
+      emit(
+        RegistrationFormInProgress(
+          firstName: event.firstName,
+          lastName: event.lastName,
+        ),
+      );
     }
   }
 
@@ -184,10 +189,12 @@ class RegistrationFormBloc
     if (state is RegistrationFormInProgress) {
       emit(
         (state as RegistrationFormInProgress).copyWith(
-          password: event.about,
+          about: event.about,
           error: null,
         ),
       );
+    } else {
+      emit(RegistrationFormInProgress(about: event.about));
     }
   }
 
@@ -227,6 +234,10 @@ class RegistrationFormBloc
     try {
       final currentState = state as RegistrationFormInProgress;
 
+      print(
+        "${currentState.firstName} ${currentState.lastName} ${currentState.birthday} ${currentState.gender} ${currentState.selectedHobbyIds} ${currentState.selectedGoalIds} ${currentState.selectedLanguageIds} ${currentState.about} ${currentState.password} ${currentState.email} ",
+      );
+
       UserRegistrationRequest urr = UserRegistrationRequest(
         firstName: currentState.firstName!,
         lastName: currentState.lastName!,
@@ -246,7 +257,7 @@ class RegistrationFormBloc
 
       emit(RegistrationFormSuccess(urr: user));
     } catch (e) {
-      emit(RegistrationFormFailure(error: e));
+      emit(RegistrationFormFailure(error: e.toString()));
     }
   }
 }
