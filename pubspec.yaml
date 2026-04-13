@@ -75,6 +75,7 @@ flutter:
   assets:
     - assets/authorization_preview/
     - assets/authorization_preview/reg_images/
+    - assets/authorization_preview/login_images/
     - assets/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see

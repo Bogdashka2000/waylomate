@@ -164,11 +164,11 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> {
                   if (state is RegistrationFormFailure) {
                     return Center(
                       child: Text(
-                        state.error,
+                        "Почта уже существует. Повторите попытку!",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: 10,
+                          fontSize: 12,
                         ),
                       ),
                     );

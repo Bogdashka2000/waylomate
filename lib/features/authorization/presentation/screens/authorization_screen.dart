@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:waylomate/features/authorization/data/models/hobby_model/model.dart';
-import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:waylomate/features/authorization/presentation/blocs/login_sheet_bloc/bloc.dart';
+import 'package:waylomate/features/authorization/presentation/screens/login/login_bottom_sheet.dart';
 
 class AuthorizationScreen extends StatefulWidget {
   AuthorizationScreen({Key? key}) : super(key: key);
@@ -87,6 +89,18 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                         ),
                       ),
                       child: InkWell(
+                        onTap: () {
+                          showMaterialModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (context) =>
+                                BlocProvider<LoginFormBloc>.value(
+                                  value: context.read<LoginFormBloc>(),
+                                  child: const LoginBottomSheet(),
+                                ),
+                          );
+                        },
+
                         borderRadius: BorderRadius.circular(8),
                         child: const Center(
                           child: Text(
@@ -109,11 +123,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                       ),
 
                       child: InkWell(
-                        // onTap: () => showMaterialModalBottomSheet(
-                        //   backgroundColor: Colors.transparent,
-                        //   context: context,
-                        //   builder: (context) => RegistrationModalWidget(),
-                        // ),
                         onTap: () =>
                             Navigator.of(context).pushNamed("/registration"),
                         borderRadius: BorderRadius.circular(8),
