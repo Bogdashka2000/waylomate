@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
+import 'package:waylomate/core/network/repositories/auth_content_repository.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/observer/observer.dart';
 import 'package:waylomate/features/authorization/presentation/router/router.dart';
 
 class RegistrationWidget extends StatefulWidget {
-  const RegistrationWidget({Key? key}) : super(key: key);
+  RegistrationWidget({Key? key, required this.acr}) : super(key: key);
+
+  final acr;
 
   @override
   State<RegistrationWidget> createState() => _RegistrationWidgetState();
@@ -15,8 +17,7 @@ class RegistrationWidget extends StatefulWidget {
 class _RegistrationWidgetState extends State<RegistrationWidget> {
   late RegistrationNavigatorObserver _observer;
   int _currentStep = 0;
-  final int _totalSteps = 9;
-  AuthContentRepository acr = AuthContentRepository();
+  int _totalSteps = 11;
 
   @override
   void initState() {
@@ -61,7 +62,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
 
           Expanded(
             child: BlocProvider<RegistrationFormBloc>(
-              create: (_) => RegistrationFormBloc(acr),
+              create: (_) => RegistrationFormBloc(widget.acr),
               child: Navigator(
                 initialRoute: 'registration_welcome',
                 observers: [_observer],

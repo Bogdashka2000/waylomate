@@ -47,7 +47,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
     if (password.isEmpty) {
       passwordError = 'Введите пароль';
     } else if (password.length < 8) {
-      passwordError = 'Минимум 6 символов';
+      passwordError = 'Минимум 8 символов';
     }
 
     isValid = emailError == null && passwordError == null;
@@ -191,54 +191,66 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                     ? _onNextPressed
                     : null,
                 borderRadius: BorderRadius.circular(8),
-                child: BlocBuilder<LoginFormBloc, LoginFormState>(
-                  builder: (context, state) {
-                    if (state is LoadingState) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      );
-                    }
-
+                child: BlocListener<LoginFormBloc, LoginFormState>(
+                  listener: (context, state) {
                     if (state is LoginValidState) {
-                      return const Center(
-                        child: Text(
-                          "✓ Войти",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                          ),
-                        ),
-                      );
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).pushReplacementNamed('/main');
+                      });
                     }
-
-                    if (state is LoginErrorState) {
-                      return const Center(
-                        child: Text(
-                          "↻ Повторить",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                          ),
-                        ),
-                      );
-                    }
-
-                    return const Center(
-                      child: Text(
-                        "ВОЙТИ",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
-                        ),
-                      ),
-                    );
                   },
+                  child: BlocBuilder<LoginFormBloc, LoginFormState>(
+                    builder: (context, state) {
+                      if (state is LoadingState) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 5,
+                          ),
+                        );
+                      }
+
+                      if (state is LoginValidState) {
+                        return const Center(
+                          child: Text(
+                            "ВОЙТИ",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (state is LoginErrorState) {
+                        return const Center(
+                          child: Text(
+                            "↻ Повторить",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                            ),
+                          ),
+                        );
+                      }
+
+                      return const Center(
+                        child: Text(
+                          "ВОЙТИ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

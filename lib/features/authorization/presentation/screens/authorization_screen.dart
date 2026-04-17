@@ -42,7 +42,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                     ),
 
                     Text(
-                      "ПУТЕШЕТВУЙ С НАМИ",
+                      "ПУТЕШЕСТВУЙ С НАМИ",
                       textAlign: TextAlign.center,
 
                       // style: GoogleFonts.robotoFlex(

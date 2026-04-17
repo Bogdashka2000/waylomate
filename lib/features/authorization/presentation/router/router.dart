@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
+import 'package:waylomate/core/network/repositories/auth_content_repository.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/profile_components_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/screens/registration/widgets/about_field.dart';
@@ -45,7 +45,8 @@ Route? router(RouteSettings settings) {
               value: context.read<RegistrationFormBloc>(),
             ),
             BlocProvider<ProfileComponentsBloc>(
-              create: (_) => ProfileComponentsBloc(AuthContentRepository()),
+              create: (_) =>
+                  ProfileComponentsBloc(context.read<AuthContentRepository>()),
             ),
           ],
           child: const HobbiesRegistrationScreen(),
@@ -60,7 +61,9 @@ Route? router(RouteSettings settings) {
               value: context.read<RegistrationFormBloc>(),
             ),
             BlocProvider<ProfileComponentsBloc>(
-              create: (_) => ProfileComponentsBloc(AuthContentRepository()),
+              create: (_) => ProfileComponentsBloc(
+                AuthContentRepository(context.read<AuthContentRepository>()),
+              ),
             ),
           ],
           child: GoalsRegistrationScreen(),
@@ -75,7 +78,9 @@ Route? router(RouteSettings settings) {
               value: context.read<RegistrationFormBloc>(),
             ),
             BlocProvider<ProfileComponentsBloc>(
-              create: (_) => ProfileComponentsBloc(AuthContentRepository()),
+              create: (_) => ProfileComponentsBloc(
+                AuthContentRepository(context.read<AuthContentRepository>()),
+              ),
             ),
           ],
           child: LanguagesRegistrationScreen(),

@@ -1,23 +1,26 @@
 import 'package:dio/dio.dart';
-import 'package:waylomate/features/authorization/data/models/goal_model/model.dart';
-import 'package:waylomate/features/authorization/data/models/hobby_model/model.dart';
+import 'package:waylomate/core/network/models/goal_model/model.dart';
+import 'package:waylomate/core/network/models/hobby_model/model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:waylomate/features/authorization/data/models/language_model/model.dart';
-import 'package:waylomate/features/authorization/data/models/login_model/request_model.dart';
-import 'package:waylomate/features/authorization/data/models/login_model/response_model.dart';
-import 'package:waylomate/features/authorization/data/models/registration_model/request_model.dart';
-import 'package:waylomate/features/authorization/data/models/registration_model/response_model.dart';
+import 'package:waylomate/core/network/models/language_model/model.dart';
+import 'package:waylomate/core/network/models/login_model/request_model.dart';
+import 'package:waylomate/core/network/models/login_model/response_model.dart';
+import 'package:waylomate/core/network/models/registration_model/request_model.dart';
+import 'package:waylomate/core/network/models/registration_model/response_model.dart';
 
 class AuthContentRepository {
-  final dio = Dio();
+  final dio;
+
+  AuthContentRepository(this.dio);
 
   Future<String> loginUser(UserLoginRequest ulr) async {
-    final server = dotenv.env['SERVER'];
-    if (server == null || server.isEmpty) {
-      throw Exception('Server в .env отсутствует');
-    }
+    print('🚀 loginUser() called');
+    print('🔍 dio instance: ${dio}');
+    print('🔍 baseUrl: ${dio.options.baseUrl}');
+    print('📤 Request data: ${ulr.toJson()}');
+
     final response = await dio.post(
-      "http://$server/user/login",
+      "/user/login",
       data: ulr.toJson(),
       options: Options(headers: {'Content-Type': 'application/json'}),
     );
@@ -36,12 +39,8 @@ class AuthContentRepository {
   Future<UserRegistrationResponse> sendUserData(
     UserRegistrationRequest urr,
   ) async {
-    final server = dotenv.env['SERVER'];
-    if (server == null || server.isEmpty) {
-      throw Exception('Server в .env отсутствует');
-    }
     final response = await dio.post(
-      "http://$server/user/registration",
+      "/user/registration",
       data: urr.toJson(),
       options: Options(headers: {'Content-Type': 'application/json'}),
     );
@@ -65,7 +64,7 @@ class AuthContentRepository {
     if (server == null || server.isEmpty) {
       throw Exception('Server в .env отсутствует');
     }
-    final response = await dio.get("http://$server/$element");
+    final response = await dio.get("/$element");
     final List<dynamic> data = response.data;
     return data
         .map((json) => fromJsonFactory(json as Map<String, dynamic>))

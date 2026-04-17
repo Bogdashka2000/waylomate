@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:waylomate/features/authorization/data/models/hobby_model/model.dart';
-import 'package:waylomate/features/authorization/data/models/goal_model/model.dart';
-import 'package:waylomate/features/authorization/data/models/language_model/model.dart';
-import 'package:waylomate/features/authorization/data/models/login_model/request_model.dart';
-import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
+import 'package:waylomate/core/network/models/hobby_model/model.dart';
+import 'package:waylomate/core/network/models/goal_model/model.dart';
+import 'package:waylomate/core/network/models/language_model/model.dart';
+import 'package:waylomate/core/network/models/login_model/request_model.dart';
+import 'package:waylomate/core/network/repositories/auth_content_repository.dart';
 
 part 'events.dart';
 part 'states.dart';

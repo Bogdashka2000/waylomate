@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:waylomate/features/authorization/data/models/registration_model/request_model.dart';
-import 'package:waylomate/features/authorization/data/models/registration_model/response_model.dart';
-import 'package:waylomate/features/authorization/data/repositories/auth_content_repository.dart';
+import 'package:waylomate/core/network/models/registration_model/request_model.dart';
+import 'package:waylomate/core/network/models/registration_model/response_model.dart';
+import 'package:waylomate/core/network/repositories/auth_content_repository.dart';
 
 part 'events.dart';
 part 'states.dart';
