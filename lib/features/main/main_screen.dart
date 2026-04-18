@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:waylomate/core/network/dio_client.dart';
+import 'package:waylomate/features/main/screens/feed/feed_screen.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key? key}) : super(key: key);
@@ -10,11 +9,44 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final PageController _pageController = PageController();
+  int _navigatorSelectedIndex = 0;
+
+  final List<Widget> _screens = [
+    const FeedScreen(text: '1'),
+    const FeedScreen(text: '2'),
+    const FeedScreen(text: '3'),
+    const FeedScreen(text: '4'),
+    const FeedScreen(text: '5'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        toolbarHeight: 80,
+        leadingWidth: 64,
+        leading: Padding(
+          padding: EdgeInsetsGeometry.only(left: 14),
+          child: CircleAvatar(backgroundColor: Colors.black),
+        ),
+        title: Text("Лента"),
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        onTap: (index) => setState(() {
+          _navigatorSelectedIndex = index;
+          _pageController.animateToPage(
+            _navigatorSelectedIndex,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.linear,
+          );
+        }),
+        currentIndex: _navigatorSelectedIndex,
         showUnselectedLabels: false,
         iconSize: 30,
         selectedIconTheme: IconThemeData(color: Colors.deepPurple),
@@ -41,18 +73,12 @@ class _MainScreenState extends State<MainScreen> {
         child: const Icon(Icons.add, size: 36, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: Center(
-        child: IconButton(
-          onPressed: () async {
-            final dio = context.read<DioClient>();
-            await dio.clearCookies();
-            Navigator.of(
-              context,
-              rootNavigator: true,
-            ).pushReplacementNamed('/auth');
-          },
-          icon: Icon(Icons.exit_to_app),
-        ),
+      body: PageView(
+        controller: _pageController,
+        children: _screens,
+        onPageChanged: (index) {
+          setState(() => _navigatorSelectedIndex = index);
+        },
       ),
     );
   }
