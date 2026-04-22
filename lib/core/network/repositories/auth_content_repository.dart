@@ -14,11 +14,6 @@ class AuthContentRepository {
   AuthContentRepository(this.dio);
 
   Future<String> loginUser(UserLoginRequest ulr) async {
-    print('🚀 loginUser() called');
-    print('🔍 dio instance: ${dio}');
-    print('🔍 baseUrl: ${dio.options.baseUrl}');
-    print('📤 Request data: ${ulr.toJson()}');
-
     final response = await dio.post(
       "/user/login",
       data: ulr.toJson(),

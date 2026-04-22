@@ -79,7 +79,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
             Navigator.of(
               context,
               rootNavigator: true,
-            ).pushReplacementNamed('/');
+            ).pushReplacementNamed('/main');
           });
         }
         if (state is LoginErrorState) {

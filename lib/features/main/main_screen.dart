@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:waylomate/features/main/screens/feed/feed_screen.dart';
+import 'package:waylomate/features/main/screens/messages/messages_screen.dart';
+import 'package:waylomate/features/main/screens/post_creator/post_creator_screen.dart';
+import 'package:waylomate/features/main/screens/profile/profile_screen.dart';
+import 'package:waylomate/features/main/screens/subs/subs_screen.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key? key}) : super(key: key);
@@ -13,11 +17,11 @@ class _MainScreenState extends State<MainScreen> {
   int _navigatorSelectedIndex = 0;
 
   final List<Widget> _screens = [
-    const FeedScreen(text: '1'),
-    const FeedScreen(text: '2'),
-    const FeedScreen(text: '3'),
-    const FeedScreen(text: '4'),
-    const FeedScreen(text: '5'),
+    FeedScreen(),
+    SubsScreen(),
+    PostCreatorScreen(),
+    MessagesScreen(),
+    ProfileScreen(),
   ];
 
   @override
