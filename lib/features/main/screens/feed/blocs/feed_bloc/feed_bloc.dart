@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waylomate/core/network/models/post_model/model.dart';
 import 'package:waylomate/core/network/models/user_model/model.dart';
 import 'package:waylomate/core/network/repositories/post_repository.dart';
+import 'package:waylomate/core/network/repositories/user_repository.dart';
 
 part 'feed_bloc_events.dart';
 part 'feed_bloc_states.dart';

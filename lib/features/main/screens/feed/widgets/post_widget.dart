@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:waylomate/core/network/models/post_model/model.dart';
+import 'package:waylomate/core/network/repositories/comments_repository.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/post_bloc/post_bloc.dart';
+import 'package:waylomate/features/main/screens/feed/comments/blocs/comment_list_bloc/comment_list_bloc.dart';
+import 'package:waylomate/features/main/screens/feed/comments/comments_bottom_sheet.dart';
 
 class PostWidget extends StatefulWidget {
   PostWidget({Key? key, required this.postModel}) : super(key: key);
@@ -103,7 +107,28 @@ class _PostWidgetState extends State<PostWidget> {
                           : Icon(Icons.favorite_border_outlined),
                     ),
                     Text("${likeCount}"),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.chat)),
+                    IconButton(
+                      onPressed: () {
+                        showMaterialModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          context: context,
+                          builder: (context) =>
+                              BlocProvider<CommentListFormBloc>(
+                                create: (_) => CommentListFormBloc(
+                                  context.read<CommentRepository>(),
+                                ),
+                                child: CommentBottomSheet(
+                                  postId: widget.postModel.Id,
+                                  postText: widget.postModel.text,
+                                  userModel: state.user,
+                                  commentCount: widget.postModel.commentCount,
+                                  createdAt: widget.postModel.createdAt,
+                                ),
+                              ),
+                        );
+                      },
+                      icon: Icon(Icons.chat_outlined),
+                    ),
                     Text("${widget.postModel.commentCount}"),
                   ],
                 ),

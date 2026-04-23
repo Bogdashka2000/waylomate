@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waylomate/core/network/repositories/post_repository.dart';
+import 'package:waylomate/core/network/repositories/user_repository.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/feed_bloc/feed_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/post_bloc/post_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/widgets/post_widget.dart';
@@ -42,14 +43,20 @@ class _FeedScreenState extends State<FeedScreen> {
             } else if (state is PostLoaded) {
               print(state.posts.length);
               return Container(
-                child: ListView.builder(
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => const Divider(
+                    height: 1,
+                    thickness: .2,
+                    color: Colors.grey,
+                  ),
                   itemCount: state.posts.length,
                   itemBuilder: (context, index) {
                     final post = state.posts[index];
                     return BlocProvider(
-                      create: (_) =>
-                          PostFormBloc(context.read<PostRepository>())
-                            ..add(GetUserByPostEvent(post.userId)),
+                      create: (_) => PostFormBloc(
+                        context.read<UserRepository>(),
+                        context.read<PostRepository>(),
+                      )..add(GetUserByPostEvent(post.userId)),
                       child: PostWidget(postModel: post),
                     );
                   },

@@ -3,13 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waylomate/core/network/models/like_model/model.dart';
 import 'package:waylomate/core/network/models/user_model/model.dart';
 import 'package:waylomate/core/network/repositories/post_repository.dart';
+import 'package:waylomate/core/network/repositories/user_repository.dart';
 
 part 'post_bloc_events.dart';
 part 'post_bloc_states.dart';
 
 class PostFormBloc extends Bloc<PostFormEvent, PostFormState> {
+  final UserRepository userRepository;
   final PostRepository postRepository;
-  PostFormBloc(this.postRepository) : super(InitialState()) {
+  PostFormBloc(this.userRepository, this.postRepository)
+    : super(InitialState()) {
     on<GetUserByPostEvent>(_onGetUserByPost);
     on<LikeToggleEvent>(_onToggleLike);
   }
@@ -21,7 +24,7 @@ class PostFormBloc extends Bloc<PostFormEvent, PostFormState> {
     emit(const LoadingPostState());
 
     try {
-      final result = await postRepository.getUserFromPost(event.id);
+      final result = await userRepository.getUserById(event.id);
       emit(UserLoaded(result, null, null));
     } catch (error) {
       emit(LoadingPostErrorState(error.toString()));
@@ -32,8 +35,6 @@ class PostFormBloc extends Bloc<PostFormEvent, PostFormState> {
     LikeToggleEvent event,
     Emitter<PostFormState> emit,
   ) async {
-    // 🔹 Не эмитим LoadingPostState если не нужно показывать лоадер на весь пост
-
     try {
       final likeResult = await postRepository.likeToggle(event.postId);
       if (state is UserLoaded) {
