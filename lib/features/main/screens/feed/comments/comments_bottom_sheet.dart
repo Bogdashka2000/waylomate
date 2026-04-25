@@ -20,7 +20,7 @@ class CommentBottomSheet extends StatefulWidget {
   final UserModel userModel;
   final int postId;
   final String postText;
-  final int commentCount;
+  int commentCount;
   final DateTime createdAt;
 
   @override
@@ -29,8 +29,8 @@ class CommentBottomSheet extends StatefulWidget {
 
 class _CommentBottomSheetState extends State<CommentBottomSheet> {
   late final TextEditingController _commentController;
-  bool _showEmailError = false;
-  String? _emailErrorText;
+  bool _showCommentError = false;
+  String? _commentErrorText;
   bool _isFormValid = false;
 
   @override
@@ -64,9 +64,9 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
     }
 
     setState(() {
-      _emailErrorText = errorText;
+      _commentErrorText = errorText;
       _isFormValid = isValid;
-      _showEmailError = comment.isNotEmpty;
+      _showCommentError = comment.isNotEmpty;
     });
   }
 
@@ -136,55 +136,50 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
           Expanded(
             child: BlocBuilder<CommentListFormBloc, CommentListFormState>(
               builder: (context, state) {
+                if (widget.commentCount == 0) {
+                  return const Center(child: Text("Комментариев пока нет 😔"));
+                }
+
                 if (state is LoadingCommentListState) {
-                  if (widget.commentCount == 0) {
-                    return const Center(
-                      child: Text("Комментариев пока нет 😔"),
-                    );
-                  }
                   return const Center(
                     child: CircularProgressIndicator(strokeWidth: 5),
                   );
                 }
 
                 if (state is LoadingCommentListState) {
-                  return const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        // color: Colors.white,
-                        strokeWidth: 5,
-                      ),
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      // color: Colors.white,
+                      strokeWidth: 5,
                     ),
                   );
                 } else if (state is CommentListLoaded) {
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: state.comments.length,
-                      itemBuilder: (context, index) {
-                        return BlocProvider(
-                          create: (_) =>
-                              CommentFormBloc(
-                                context.read<UserRepository>(),
-                                context.read<CommentRepository>(),
-                              )..add(
-                                GetUserByCommentEvent(
-                                  state.comments[index].userId,
-                                ),
+                  return ListView.builder(
+                    itemCount: state.comments.length,
+                    itemBuilder: (context, index) {
+                      return BlocProvider(
+                        create: (_) =>
+                            CommentFormBloc(
+                              context.read<UserRepository>(),
+                              context.read<CommentRepository>(),
+                            )..add(
+                              GetUserByCommentEvent(
+                                state.comments[index].userId,
                               ),
-                          child: CommentWidget(
-                            userId: state.comments[index].userId,
-                            text: state.comments[index].text,
-                          ),
-                        );
-                      },
-                    ),
+                            ),
+                        child: CommentWidget(
+                          userId: state.comments[index].userId,
+                          text: state.comments[index].text,
+                        ),
+                      );
+                    },
                   );
                 } else if (state is CommentListErrorState) {
-                  return Expanded(child: Center(child: Text("${state.error}")));
+                  return Center(child: Text("${state.error}"));
                 } else {
-                  return Expanded(
-                    child: Center(
-                      child: Text("Произошла ошибка, повторите позже"),
+                  return Center(
+                    child: Text(
+                      "Произошла ошибка, повторите позже, ${widget.commentCount}",
                     ),
                   );
                 }
@@ -235,6 +230,10 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
           context.read<CommentListFormBloc>().add(
             SendCommentEvent(widget.postId, _commentController.text.trim()),
           );
+
+          setState(() {
+            widget.commentCount++;
+          });
         }
       });
     }

@@ -9,7 +9,8 @@ part 'comment_list_bloc_states.dart';
 class CommentListFormBloc
     extends Bloc<CommentListFormEvent, CommentListFormState> {
   final CommentRepository commentRepository;
-  CommentListFormBloc(this.commentRepository) : super(InitialState()) {
+  CommentListFormBloc(this.commentRepository)
+    : super(InitialCommentListState()) {
     on<GetCommentsEvent>(_onGetComments);
     on<SendCommentEvent>(_onSendComment);
   }

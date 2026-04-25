@@ -5,7 +5,9 @@ abstract class CommentListFormState extends Equatable {
   List<Object?> get props => [];
 }
 
-class InitialState extends CommentListFormState {}
+class InitialCommentListState extends CommentListFormState {
+  const InitialCommentListState();
+}
 
 class LoadingCommentListState extends CommentListFormState {
   const LoadingCommentListState();
