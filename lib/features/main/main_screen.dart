@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:waylomate/core/network/repositories/post_repository.dart';
+import 'package:waylomate/features/main/screens/feed/comments/blocs/comment_list_bloc/comment_list_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/feed_screen.dart';
 import 'package:waylomate/features/main/screens/messages/messages_screen.dart';
+import 'package:waylomate/features/main/screens/post_creator/post_creator_bloc/post_creator_bloc.dart';
 import 'package:waylomate/features/main/screens/post_creator/post_creator_screen.dart';
 import 'package:waylomate/features/main/screens/profile/profile_screen.dart';
 import 'package:waylomate/features/main/screens/subs/subs_screen.dart';
@@ -19,7 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     FeedScreen(),
     SubsScreen(),
-    PostCreatorScreen(),
+    const SizedBox.shrink(),
     MessagesScreen(),
     ProfileScreen(),
   ];
@@ -43,14 +48,18 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) => setState(() {
-          _navigatorSelectedIndex = index;
-          _pageController.animateToPage(
-            _navigatorSelectedIndex,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.linear,
-          );
-        }),
+        onTap: (index) {
+          if (index == 2) return;
+
+          setState(() {
+            _navigatorSelectedIndex = index;
+            _pageController.animateToPage(
+              _navigatorSelectedIndex,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.linear,
+            );
+          });
+        },
         currentIndex: _navigatorSelectedIndex,
         showUnselectedLabels: false,
         iconSize: 30,
@@ -72,7 +81,17 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
+        onPressed: () => {
+          showMaterialModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            builder: (context) => BlocProvider<PostCreatorFormBloc>(
+              create: (_) =>
+                  PostCreatorFormBloc(context.read<PostRepository>()),
+              child: PostCreatorBottomSheet(),
+            ),
+          ),
+        },
         shape: const CircleBorder(),
         backgroundColor: Color(0xFF7E57C2),
         child: const Icon(Icons.add, size: 36, color: Colors.white),

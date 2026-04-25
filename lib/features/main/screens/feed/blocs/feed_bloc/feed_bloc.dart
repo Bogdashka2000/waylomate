@@ -22,6 +22,9 @@ class FeedFormBloc extends Bloc<FeedFormEvent, FeedFormState> {
 
     try {
       final result = await postRepository.getPosts();
+      result.sort(
+        (first, second) => second.createdAt.compareTo(first.createdAt),
+      );
       emit(PostLoaded(result));
     } catch (error) {
       emit(LoadingFeedErrorState(error.toString()));

@@ -42,4 +42,17 @@ class PostRepository {
       throw Exception(e);
     }
   }
+
+  Future<bool> sendPost(String text) async {
+    try {
+      await dio.dio.post(
+        "/post/add",
+        data: {"text": text},
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      return true;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }
