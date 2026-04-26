@@ -130,7 +130,7 @@ class _LanguageAlertState extends State<LanguageAlert> {
                     TextButton(
                       onPressed: () => context
                           .read<ProfileComponentsBloc>()
-                          .add(HobbiesRequested()),
+                          .add(LanguagesRequested()),
                       child: Text("Попробовать снова"),
                     ),
                   ],

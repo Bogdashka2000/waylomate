@@ -18,7 +18,7 @@ Future<void> main() async {
   await dotenv.load(fileName: "assets/.env");
   final dioClient = DioClient();
   await dioClient.init();
-  final acr = AuthContentRepository(dioClient.dio);
+  final acr = AuthContentRepository(dioClient);
   final postRepository = PostRepository(dioClient);
   final userRepository = UserRepository(dioClient);
   final commentRepository = CommentRepository(dioClient);

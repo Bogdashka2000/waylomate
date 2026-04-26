@@ -128,7 +128,7 @@ class _GoalAlertState extends State<GoalAlert> {
                     TextButton(
                       onPressed: () => context
                           .read<ProfileComponentsBloc>()
-                          .add(HobbiesRequested()),
+                          .add(GoalsRequested()),
                       child: Text("Попробовать снова"),
                     ),
                   ],

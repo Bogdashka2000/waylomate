@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:waylomate/core/network/dio_client.dart';
 import 'package:waylomate/core/network/repositories/auth_content_repository.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/profile_components_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
@@ -62,7 +63,7 @@ Route? router(RouteSettings settings) {
             ),
             BlocProvider<ProfileComponentsBloc>(
               create: (_) => ProfileComponentsBloc(
-                AuthContentRepository(context.read<AuthContentRepository>()),
+                AuthContentRepository(context.read<DioClient>()),
               ),
             ),
           ],
@@ -79,7 +80,7 @@ Route? router(RouteSettings settings) {
             ),
             BlocProvider<ProfileComponentsBloc>(
               create: (_) => ProfileComponentsBloc(
-                AuthContentRepository(context.read<AuthContentRepository>()),
+                AuthContentRepository(context.read<DioClient>()),
               ),
             ),
           ],

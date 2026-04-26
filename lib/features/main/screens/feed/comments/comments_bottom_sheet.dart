@@ -29,8 +29,6 @@ class CommentBottomSheet extends StatefulWidget {
 
 class _CommentBottomSheetState extends State<CommentBottomSheet> {
   late final TextEditingController _commentController;
-  bool _showCommentError = false;
-  String? _commentErrorText;
   bool _isFormValid = false;
 
   @override
@@ -54,19 +52,12 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
   void _validateForm() {
     final comment = _commentController.text.trim();
 
-    String? errorText;
-    bool isValid = false;
-
-    if (comment.isEmpty) {
-      errorText = 'Комментарий пуст';
-    } else {
-      isValid = true;
-    }
-
     setState(() {
-      _commentErrorText = errorText;
-      _isFormValid = isValid;
-      _showCommentError = comment.isNotEmpty;
+      if (comment.isEmpty) {
+        _isFormValid = false;
+      } else {
+        _isFormValid = true;
+      }
     });
   }
 
@@ -209,7 +200,9 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
                   ),
                 ),
                 FloatingActionButton(
-                  backgroundColor: Color.fromARGB(255, 146, 103, 222),
+                  backgroundColor: _isFormValid
+                      ? Color.fromARGB(255, 146, 103, 222)
+                      : Colors.grey,
                   onPressed: () => _sendComment(),
                   shape: const CircleBorder(),
                   child: Icon(Icons.send, color: Colors.white),

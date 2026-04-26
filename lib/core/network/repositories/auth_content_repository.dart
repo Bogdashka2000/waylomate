@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:waylomate/core/network/dio_client.dart';
 import 'package:waylomate/core/network/models/goal_model/model.dart';
 import 'package:waylomate/core/network/models/hobby_model/model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,12 +10,12 @@ import 'package:waylomate/core/network/models/registration_model/request_model.d
 import 'package:waylomate/core/network/models/registration_model/response_model.dart';
 
 class AuthContentRepository {
-  final dio;
+  final DioClient dio;
 
   AuthContentRepository(this.dio);
 
   Future<String> loginUser(UserLoginRequest ulr) async {
-    final response = await dio.post(
+    final response = await dio.dio.post(
       "/user/login",
       data: ulr.toJson(),
       options: Options(headers: {'Content-Type': 'application/json'}),
@@ -34,7 +35,7 @@ class AuthContentRepository {
   Future<UserRegistrationResponse> sendUserData(
     UserRegistrationRequest urr,
   ) async {
-    final response = await dio.post(
+    final response = await dio.dio.post(
       "/user/registration",
       data: urr.toJson(),
       options: Options(headers: {'Content-Type': 'application/json'}),
@@ -59,7 +60,7 @@ class AuthContentRepository {
     if (server == null || server.isEmpty) {
       throw Exception('Server в .env отсутствует');
     }
-    final response = await dio.get("/$element");
+    final response = await dio.dio.get("/$element");
     final List<dynamic> data = response.data;
     return data
         .map((json) => fromJsonFactory(json as Map<String, dynamic>))

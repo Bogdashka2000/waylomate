@@ -1,16 +1,35 @@
-# waylomate
+# 🌟 Waylomate
 
-A new Flutter project.
+Мобильное приложение для поиска попутчиков и организации совместных путешествий.  
+Система автоматически подбирает кандидатов на основе интересов, маршрутов, целей поездки и языковых предпочтений.
 
-## Getting Started
+🎓 **О проекте**  
+Данное приложение разрабатывается в рамках **выпускной квалификационной работы** по направлению подготовки **09.02.07 «Информационные системы и программирование»**.
 
-This project is a starting point for a Flutter application.
+## ✨ Возможности
+- 🧭 Фильтрация попутчиков по интересам, маршрутам и языкам
+- 📝 Публикация объявлений о планируемых поездках
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🚀 Развёртывание
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**Требования:**
+- Flutter SDK
+- Dart
+
+```bash
+# 1. Клонируйте репозиторий
+git clone https://github.com/your-username/waylomate.git
+cd waylomate
+
+# 2. Установите зависимости
+flutter pub get
+
+# 3. Настройте переменные окружения 
+# Создайте файл .env в assets и укажите:
+# SERVER=<ваш сервер>
+# PORT=<ваш порт>
+
+# 4. Запустите приложение
+flutter run
