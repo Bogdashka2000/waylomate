@@ -20,7 +20,7 @@
 
 ```bash
 # 1. Клонируйте репозиторий
-git clone https://github.com/your-username/waylomate.git
+git clone https://github.com/Bogdashka2000/waylomate.git
 cd waylomate
 
 # 2. Установите зависимости

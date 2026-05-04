@@ -7,9 +7,10 @@ import 'package:waylomate/core/network/repositories/post_repository.dart';
 import 'package:waylomate/core/network/repositories/user_repository.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/login_sheet_bloc/bloc.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/registration_form_bloc/bloc.dart';
+import 'package:waylomate/features/main/bloc/main_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/feed_bloc/feed_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/post_bloc/post_bloc.dart';
-import 'package:waylomate/features/main/screens/feed/comments/blocs/comment_list_bloc/comment_list_bloc.dart';
+import 'package:waylomate/features/main/screens/subs/bloc/subs_bloc.dart';
 import 'package:waylomate/waylomate_app.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -44,6 +45,12 @@ Future<void> main() async {
           ),
           BlocProvider<PostFormBloc>(
             create: (_) => PostFormBloc(userRepository, postRepository),
+          ),
+          BlocProvider<SubsFormBloc>(
+            create: (_) => SubsFormBloc(userRepository),
+          ),
+          BlocProvider<MainFormBloc>(
+            create: (_) => MainFormBloc(userRepository),
           ),
         ],
         child: WaylomateApp(isLogged: isLogged, acr: acr),
