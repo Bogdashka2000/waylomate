@@ -48,7 +48,6 @@ class _GenderRegistrationScreenState extends State<GenderRegistrationScreen> {
                     height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 8),
 
                 Row(
                   spacing: 25,
@@ -61,7 +60,7 @@ class _GenderRegistrationScreenState extends State<GenderRegistrationScreen> {
                       }),
                       child: SvgPicture.asset(
                         "assets/authorization_preview/reg_images/female.svg",
-                        width: _gender == Gender.woman ? 120 : 90,
+                        width: _gender == Gender.woman ? 90 : 50,
                       ),
                     ),
                     InkWell(
@@ -71,7 +70,7 @@ class _GenderRegistrationScreenState extends State<GenderRegistrationScreen> {
                       }),
                       child: SvgPicture.asset(
                         "assets/authorization_preview/reg_images/male.svg",
-                        width: _gender == Gender.man ? 120 : 90,
+                        width: _gender == Gender.man ? 90 : 50,
                       ),
                     ),
                   ],
@@ -79,48 +78,50 @@ class _GenderRegistrationScreenState extends State<GenderRegistrationScreen> {
               ],
             ),
           ),
-          Container(
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              gradient: _isFormValid
-                  ? const LinearGradient(
-                      colors: [
-                        Color.fromARGB(255, 126, 87, 194),
-                        Color.fromARGB(255, 74, 50, 115),
-                      ],
-                    )
-                  : const LinearGradient(
-                      colors: [
-                        Color.fromARGB(255, 130, 130, 130),
-                        Color.fromARGB(255, 43, 43, 43),
-                      ],
-                    ),
-            ),
-            child: InkWell(
-              onTap: () => _isFormValid ? _onNextPressed() : null,
-              borderRadius: BorderRadius.circular(8),
-              child: BlocBuilder<RegistrationFormBloc, RegistrationFormState>(
-                builder: (context, state) {
-                  if (state is RegistrationFormInProgress) {
-                    const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
+          Expanded(
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                gradient: _isFormValid
+                    ? const LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 126, 87, 194),
+                          Color.fromARGB(255, 74, 50, 115),
+                        ],
+                      )
+                    : const LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 130, 130, 130),
+                          Color.fromARGB(255, 43, 43, 43),
+                        ],
+                      ),
+              ),
+              child: InkWell(
+                onTap: () => _isFormValid ? _onNextPressed() : null,
+                borderRadius: BorderRadius.circular(8),
+                child: BlocBuilder<RegistrationFormBloc, RegistrationFormState>(
+                  builder: (context, state) {
+                    if (state is RegistrationFormInProgress) {
+                      const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      );
+                    }
+                    return const Center(
+                      child: Text(
+                        "ДАЛЕЕ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
                       ),
                     );
-                  }
-                  return const Center(
-                    child: Text(
-                      "ДАЛЕЕ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
-                    ),
-                  );
-                },
+                  },
+                ),
               ),
             ),
           ),

@@ -10,6 +10,8 @@ import 'package:waylomate/features/authorization/presentation/blocs/registration
 import 'package:waylomate/features/main/bloc/main_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/feed_bloc/feed_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/post_bloc/post_bloc.dart';
+import 'package:waylomate/features/main/screens/messages/bloc/chat_bloc.dart';
+import 'package:waylomate/features/main/screens/messages/service/chat_service.dart';
 import 'package:waylomate/features/main/screens/subs/bloc/subs_bloc.dart';
 import 'package:waylomate/waylomate_app.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,6 +27,13 @@ Future<void> main() async {
   final commentRepository = CommentRepository(dioClient);
   final isLogged = await dioClient.hasToken();
 
+  final chatService = ChatService(
+    dioClient: dioClient,
+    baseUrl: 'ws://${dotenv.env['SERVER']}:${dotenv.env['PORT']}',
+    cookieName: 'user_token',
+    httpDomain: 'http://${dotenv.env['SERVER']}:${dotenv.env['PORT']}',
+  );
+
   runApp(
     MultiRepositoryProvider(
       providers: [
@@ -36,6 +45,7 @@ Future<void> main() async {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (_) => ChatBloc(chatService: chatService)),
           BlocProvider<LoginFormBloc>(create: (_) => LoginFormBloc(acr)),
           BlocProvider<RegistrationFormBloc>(
             create: (_) => RegistrationFormBloc(acr),

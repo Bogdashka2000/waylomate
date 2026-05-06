@@ -13,8 +13,20 @@ class SubsScreen extends StatefulWidget {
   _SubsScreenState createState() => _SubsScreenState();
 }
 
-class _SubsScreenState extends State<SubsScreen> {
+class _SubsScreenState extends State<SubsScreen>
+    with AutomaticKeepAliveClientMixin {
   bool _isFirst = true;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void didUpdateWidget(SubsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.userId != widget.userId) {
+      updateKeepAlive();
+    }
+  }
 
   @override
   void initState() {

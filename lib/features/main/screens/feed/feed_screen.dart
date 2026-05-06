@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:waylomate/core/network/repositories/post_repository.dart';
 import 'package:waylomate/core/network/repositories/user_repository.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/feed_bloc/feed_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/blocs/post_bloc/post_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/widgets/post_widget.dart';
+import 'package:waylomate/features/main/screens/post_creator/post_creator_bloc/post_creator_bloc.dart';
+import 'package:waylomate/features/main/screens/post_creator/post_creator_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   FeedScreen({Key? key}) : super(key: key);
@@ -13,7 +16,11 @@ class FeedScreen extends StatefulWidget {
   _FeedScreenState createState() => _FeedScreenState();
 }
 
-class _FeedScreenState extends State<FeedScreen> {
+class _FeedScreenState extends State<FeedScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
@@ -26,11 +33,25 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        context.read<FeedFormBloc>().add(GetPostsEvent());
-      },
-      child: Container(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showMaterialModalBottomSheet(
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (context) => BlocProvider<PostCreatorFormBloc>(
+            create: (_) => PostCreatorFormBloc(context.read<PostRepository>()),
+            child: PostCreatorBottomSheet(),
+          ),
+        ),
+        shape: const CircleBorder(),
+        backgroundColor: const Color(0xFF7E57C2),
+        child: const Icon(Icons.edit, size: 28, color: Colors.white),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<FeedFormBloc>().add(GetPostsEvent());
+        },
         child: BlocBuilder<FeedFormBloc, FeedFormState>(
           builder: (context, state) {
             if (state is LoadingFeedState) {
@@ -41,8 +62,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               );
             } else if (state is PostLoaded) {
-              print(state.posts.length);
-              return Container(
+              return Expanded(
                 child: ListView.separated(
                   separatorBuilder: (context, index) => const Divider(
                     height: 1,

@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:waylomate/core/network/repositories/post_repository.dart';
 import 'package:waylomate/features/main/bloc/main_bloc.dart';
-import 'package:waylomate/features/main/screens/feed/blocs/feed_bloc/feed_bloc.dart';
 import 'package:waylomate/features/main/screens/feed/feed_screen.dart';
 import 'package:waylomate/features/main/screens/messages/messages_screen.dart';
-import 'package:waylomate/features/main/screens/post_creator/post_creator_bloc/post_creator_bloc.dart';
-import 'package:waylomate/features/main/screens/post_creator/post_creator_screen.dart';
+import 'package:waylomate/features/main/screens/news/news_screen.dart';
 import 'package:waylomate/features/main/screens/profile/profile_screen.dart';
-import 'package:waylomate/features/main/screens/subs/bloc/subs_bloc.dart';
 import 'package:waylomate/features/main/screens/subs/subs_screen.dart';
 import 'package:waylomate/features/main/widgets/main_app_bar.dart';
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key}); // 🔹 Современный синтаксис
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -24,14 +19,17 @@ class _MainScreenState extends State<MainScreen> {
   final PageController _pageController = PageController();
   int _navigatorSelectedIndex = 0;
 
-  static List<String> appBarTitles = [
+  static const List<String> appBarTitles = [
     "Лента",
     "Подписки",
-    "",
+    "Новости",
     "Чат",
     "Профиль",
   ];
   String actualTitle = appBarTitles[0];
+
+  final List<Widget> _staticScreens = [FeedScreen(), NewsScreen()];
+  List<Widget>? _cachedScreens; // 🔹 КЭШ: экраны создаются 1 раз
 
   @override
   void initState() {
@@ -44,38 +42,38 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose(); // 🔹 Освобождаем ресурсы контроллера
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<MainFormBloc, MainFormState>(
       builder: (context, state) {
         if (state is LoadingMainState) {
-          return const Scaffold(
-            body: Center(
-              child: LinearProgressIndicator(
-                // color: Colors.white,
-              ),
-            ),
-          );
+          return const Scaffold(body: Center(child: LinearProgressIndicator()));
         } else if (state is MeLoaded) {
-          List<Widget> _screens = [
-            FeedScreen(),
+          // 🔹 ИСПРАВЛЕНО: создаём экраны ТОЛЬКО ПЕРВЫЙ РАЗ
+          _cachedScreens ??= [
+            _staticScreens[0],
             SubsScreen(userId: state.user.id),
-            SizedBox.shrink(),
-            MessagesScreen(),
-            ProfileScreen(),
+            _staticScreens[1],
+            MessagesScreen(userId: state.user.id),
+            ProfileScreen(userModel: state.user, addBack: false),
           ];
 
           return Scaffold(
             backgroundColor: Colors.white,
-
-            appBar: MainAppBar(
-              actualTitle: actualTitle,
-              avatarLink: state.user.avatarImageUrl,
-            ),
+            appBar: _navigatorSelectedIndex != 4
+                ? MainAppBar(
+                    actualTitle: actualTitle,
+                    avatarLink: state.user.avatarImageUrl,
+                  )
+                : null,
             bottomNavigationBar: BottomNavigationBar(
               backgroundColor: Colors.white,
               onTap: (index) {
-                if (index == 2) return;
-
                 setState(() {
                   _navigatorSelectedIndex = index;
                   actualTitle = appBarTitles[index];
@@ -89,8 +87,8 @@ class _MainScreenState extends State<MainScreen> {
               currentIndex: _navigatorSelectedIndex,
               showUnselectedLabels: false,
               iconSize: 30,
-              selectedIconTheme: IconThemeData(color: Colors.deepPurple),
-              selectedLabelStyle: TextStyle(color: Colors.deepPurple),
+              selectedIconTheme: const IconThemeData(color: Colors.deepPurple),
+              selectedLabelStyle: const TextStyle(color: Colors.deepPurple),
               type: BottomNavigationBarType.fixed,
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Лента'),
@@ -99,8 +97,8 @@ class _MainScreenState extends State<MainScreen> {
                   label: 'Друзья',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.circle, color: Colors.transparent),
-                  label: '',
+                  icon: Icon(Icons.newspaper),
+                  label: 'Новости',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.message),
@@ -112,27 +110,10 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => {
-                showMaterialModalBottomSheet(
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  builder: (context) => BlocProvider<PostCreatorFormBloc>(
-                    create: (_) =>
-                        PostCreatorFormBloc(context.read<PostRepository>()),
-                    child: PostCreatorBottomSheet(),
-                  ),
-                ),
-              },
-              shape: const CircleBorder(),
-              backgroundColor: Color(0xFF7E57C2),
-              child: const Icon(Icons.add, size: 36, color: Colors.white),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
             body: PageView(
               controller: _pageController,
-              children: _screens,
+              physics: const NeverScrollableScrollPhysics(),
+              children: _cachedScreens!, // 🔹 Используем закэшированный список
               onPageChanged: (index) {
                 setState(() => _navigatorSelectedIndex = index);
               },
@@ -144,11 +125,7 @@ class _MainScreenState extends State<MainScreen> {
           );
         } else {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(
-                // color: Colors.white,
-              ),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
       },
