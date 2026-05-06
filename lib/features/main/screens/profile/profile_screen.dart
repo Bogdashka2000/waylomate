@@ -41,8 +41,8 @@ class _ProfileScreenState extends State<ProfileScreen>
     final gender = widget.userModel.gender;
     final about = widget.userModel.about;
 
-    return Container(
-      child: Column(
+    return Scaffold(
+      body: Column(
         children: [
           Container(
             decoration: BoxDecoration(

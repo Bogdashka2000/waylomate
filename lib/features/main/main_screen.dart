@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
   ];
   String actualTitle = appBarTitles[0];
 
-  final List<Widget> _staticScreens = [FeedScreen(), NewsScreen()];
+  final List<Widget> _staticScreens = [FeedScreen()];
   List<Widget>? _cachedScreens; // 🔹 КЭШ: экраны создаются 1 раз
 
   @override
@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
-    _pageController.dispose(); // 🔹 Освобождаем ресурсы контроллера
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -54,11 +54,10 @@ class _MainScreenState extends State<MainScreen> {
         if (state is LoadingMainState) {
           return const Scaffold(body: Center(child: LinearProgressIndicator()));
         } else if (state is MeLoaded) {
-          // 🔹 ИСПРАВЛЕНО: создаём экраны ТОЛЬКО ПЕРВЫЙ РАЗ
           _cachedScreens ??= [
             _staticScreens[0],
             SubsScreen(userId: state.user.id),
-            _staticScreens[1],
+            NewsScreen(),
             MessagesScreen(userId: state.user.id),
             ProfileScreen(userModel: state.user, addBack: false),
           ];

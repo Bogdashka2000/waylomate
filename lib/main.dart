@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:waylomate/core/network/dio_client.dart';
 import 'package:waylomate/core/network/repositories/auth_content_repository.dart';
 import 'package:waylomate/core/network/repositories/comments_repository.dart';
+import 'package:waylomate/core/network/repositories/news_repository.dart';
 import 'package:waylomate/core/network/repositories/post_repository.dart';
 import 'package:waylomate/core/network/repositories/user_repository.dart';
 import 'package:waylomate/features/authorization/presentation/blocs/login_sheet_bloc/bloc.dart';
@@ -12,6 +13,7 @@ import 'package:waylomate/features/main/screens/feed/blocs/feed_bloc/feed_bloc.d
 import 'package:waylomate/features/main/screens/feed/blocs/post_bloc/post_bloc.dart';
 import 'package:waylomate/features/main/screens/messages/bloc/chat_bloc.dart';
 import 'package:waylomate/features/main/screens/messages/service/chat_service.dart';
+import 'package:waylomate/features/main/screens/news/bloc/news_bloc.dart';
 import 'package:waylomate/features/main/screens/subs/bloc/subs_bloc.dart';
 import 'package:waylomate/waylomate_app.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,6 +27,7 @@ Future<void> main() async {
   final postRepository = PostRepository(dioClient);
   final userRepository = UserRepository(dioClient);
   final commentRepository = CommentRepository(dioClient);
+  final newsRepository = NewsRepository(dioClient);
   final isLogged = await dioClient.hasToken();
 
   final chatService = ChatService(
@@ -42,6 +45,7 @@ Future<void> main() async {
         RepositoryProvider<PostRepository>.value(value: postRepository),
         RepositoryProvider<UserRepository>.value(value: userRepository),
         RepositoryProvider<CommentRepository>.value(value: commentRepository),
+        RepositoryProvider<NewsRepository>.value(value: newsRepository),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -61,6 +65,9 @@ Future<void> main() async {
           ),
           BlocProvider<MainFormBloc>(
             create: (_) => MainFormBloc(userRepository),
+          ),
+          BlocProvider<NewsFormBloc>(
+            create: (_) => NewsFormBloc(newsRepository),
           ),
         ],
         child: WaylomateApp(isLogged: isLogged, acr: acr),
